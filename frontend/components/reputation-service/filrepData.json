@@ -1,0 +1,46 @@
+{
+  "address": "f01393827",
+  "creditScore": null,
+  "energy": { "recs": null, "pageUrl": null },
+  "freeSpace": "846658313125888",
+  "goldenPath": {
+    "storageDealSuccessRate": true,
+    "retrievalDealSuccessRate": false,
+    "fastRetrieval": null,
+    "verifiedDealNoPrice": false,
+    "faultsBelowThreshold": true
+  },
+  "id": 0,
+  "isoCode": "KR",
+  "maxPieceSize": "34359738368",
+  "minPieceSize": "256",
+  "price": "500000000",
+  "qualityAdjPower": "1101022310957056",
+  "rank": "1",
+  "rawPower": "1100989096525824",
+  "reachability": "reachable",
+  "region": "Asia",
+  "regionRank": "1",
+  "score": "100",
+  "scores": {
+    "total": "100",
+    "uptime": "30",
+    "storageDeals": "40",
+    "committedSectorsProofs": "30"
+  },
+  "status": true,
+  "storageDeals": {
+    "averagePrice": "42871093",
+    "dataStored": "4297719808",
+    "faultTerminated": 0,
+    "noPenalties": 7,
+    "recent30days": 5,
+    "slashed": 0,
+    "successRate": "1.00000000000000000000",
+    "terminated": 0,
+    "total": 7
+  },
+  "tag": { "name": null, "verified": null },
+  "uptimeAverage": 1,
+  "verifiedPrice": "50000000"
+}

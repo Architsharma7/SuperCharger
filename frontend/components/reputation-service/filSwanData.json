@@ -1,0 +1,23 @@
+{
+  "address_balance": "113002.397548129700949279",
+  "adjusted_power": "14.5629 PiB",
+  "auto_bid_task_cnt": null,
+  "auto_bid_task_per_day": null,
+  "bid_mode": null,
+  "contact_info": null,
+  "heartbeat_status": "Offline",
+  "last_auto_bid_at": null,
+  "location": "Global",
+  "max_piece_size": "32.0 GiB",
+  "min_piece_size": "600.0 MiB",
+  "miner_id": "f01969779",
+  "offline_deal_available": false,
+  "price": "1",
+  "score": 96,
+  "start_epoch": null,
+  "status": "Active",
+  "update_time_str": "1695197744",
+  "verified_price": "0E-18",
+  "yearly_price": "1.0512E+6",
+  "yearly_verified_price": "0E-18"
+}
