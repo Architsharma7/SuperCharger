@@ -13,7 +13,7 @@ const getMiners = async () => {
       url: "https://api.filswan.com/miners",
       params: { offset: 0, limit: 10 },
     };
-    const data = await axios.request(options);
+    const response = await axios.request(options);
 
     console.log(response.data.data); // total data
     console.log(response.data.miner); // total data
