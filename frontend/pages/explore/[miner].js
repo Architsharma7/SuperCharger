@@ -10,7 +10,7 @@ const SpecificMiners = () => {
   const [userAccount, setUserAccount] = useState("");
 
   const decrypt = async () => {
-    const cid = CID; //replace with your IPFS CID
+    const cid = CID; 
     const { publicKey, signedMessage } = await encryptionSignature();
     const keyObject = await lighthouse.fetchEncryptionKey(
       cid,

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {
   Table,
   Thead,
@@ -9,8 +9,39 @@ import {
   TableCaption,
   TableContainer,
 } from "@chakra-ui/react";
+import dynamic from "next/dynamic";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 const Explore = () => {
+
+  const [apiData, setApiData] = useState([]);
+  const router = useRouter()
+
+  const getMiners = async () => {
+    try {
+      const options = {
+        method: "GET",
+        url: "https://api.filswan.com/miners",
+        params: { offset: 0, limit: 20 },
+      };
+      const response = await axios.request(options);
+      const data = response.data.data
+  
+      console.log(data); // total data
+
+      setApiData(data.miner)
+
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getMiners()
+  }, [])
+  
+  
   return (
     <div className="w-screen">
       <div className="flex justify-center mx-auto mt-10">
@@ -21,7 +52,7 @@ const Explore = () => {
             </TableCaption>
             <Thead>
               <Tr>
-                <Th fontSize="xl">SP Name</Th>
+                <Th fontSize="xl">SP Status</Th>
                 <Th fontSize="xl">SP ID</Th>
                 <Th fontSize="xl" isNumeric>
                   Green Score
@@ -32,30 +63,21 @@ const Explore = () => {
               </Tr>
             </Thead>
             <Tbody>
-              <Tr>
-                <Td fontSize="large">inches</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <Td fontSize="large" isNumeric>25.4</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <button className="mx-auto flex justify-center my-auto mt-4 font-semibold bg-blue-500 px-7 py-1 text-white rounded-2xl text-lg">
+              {apiData ? apiData.map((data) => {return(
+                <Tr>
+                <Td fontSize="large" className="text-green-500">{data.status}</Td>
+                <Td fontSize="large">{data.miner_id}</Td>
+                <Td fontSize="large" isNumeric>
+                  25.4
+                </Td>
+                <Td fontSize="large">{data.score}</Td>
+                <Td fontSize="large">{data.location}</Td>
+                <button onClick={() => router.push(`/explore/${data.miner_id}`)} className="mx-auto flex justify-center my-auto mt-4 font-semibold bg-blue-500 px-7 py-1 text-white rounded-2xl text-lg">
                   Use SP
                 </button>
               </Tr>
-              <Tr>
-                <Td fontSize="large">inches</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <Td fontSize="large" isNumeric>25.4</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-              </Tr>
-              <Tr>
-                <Td fontSize="large">inches</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <Td fontSize="large" isNumeric>25.4</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-                <Td fontSize="large">millimetres (mm)</Td>
-              </Tr>
+              )}) : <div></div>
+}
             </Tbody>
           </Table>
         </TableContainer>
@@ -64,4 +86,4 @@ const Explore = () => {
   );
 };
 
-export default Explore;
+export default dynamic(() => Promise.resolve(Explore), { ssr: false });
