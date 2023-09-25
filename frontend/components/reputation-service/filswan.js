@@ -2,23 +2,21 @@ import axios from "axios";
 
 const getMiners = async () => {
   try {
-    // let response = await axios.get("https://api.filrep.io/api/v1/miners", {
-    //   params: {
-    //     offset: 0,
-    //     limit: 10,
-    //   },
-    // });
     const options = {
       method: "GET",
       url: "https://api.filswan.com/miners",
-      params: { offset: 0, limit: 10 },
+      params: { offset: 0, limit: 20 },
+      sort_by: "score",
+      order : "desc",
     };
     const response = await axios.request(options);
 
-    console.log(response.data.data); // total data
-    console.log(response.data.miner); // total data
+    const data = response.data.data.miner
+  
+    console.log(data); // total data
 
-    // console.log(response);
+    return data
+
   } catch (error) {
     console.log(error);
   }

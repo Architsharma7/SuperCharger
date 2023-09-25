@@ -1,95 +1,128 @@
-import React, { useState } from "react";
 import { useRouter } from "next/router";
-import { ethers } from "ethers";
-import lighthouse from "@lighthouse-web3/sdk";
+import React, { useEffect, useState } from "react";
+import axios from "axios";
+import { Card, CardBody, AbsoluteCenter, Box } from "@chakra-ui/react";
+import { Divider } from "@chakra-ui/react";
 
 const SpecificMiners = () => {
   const router = useRouter();
-  const [CID, Cid] = useState("");
-  const [fileURL, setFileURL] = useState(null);
-  const [userAccount, setUserAccount] = useState("");
 
-  const decrypt = async () => {
-    const cid = CID; 
-    const { publicKey, signedMessage } = await encryptionSignature();
-    const keyObject = await lighthouse.fetchEncryptionKey(
-      cid,
-      publicKey,
-      signedMessage
-    );
+  const [minerDetails, setMinerDetails] = useState(null);
 
-    const fileType = "image/jpeg";
-    const decrypted = await lighthouse.decryptFile(
-      cid,
-      keyObject.data.key,
-      fileType
-    );
-    console.log(decrypted);
-    const url = URL.createObjectURL(decrypted);
-    console.log(url);
-    setFileURL(url);
-  };
+  const { miner } = router.query;
 
-  const encryptionSignature = async () => {
-    const { ethereum } = window;
+  const getMiners = async () => {
+    try {
+      if (miner) {
+        const options = {
+          method: "GET",
+          url: `https://api.filswan.com/miners/${miner}`,
+        };
+        const response = await axios.request(options);
 
-    if (!ethereum) {
-      alert("please install metamask");
-    }
-    if (ethereum) {
-      const accounts = await ethereum.request({
-        method: "eth_requestAccounts",
-      });
+        const data = response.data.data.miner;
 
-      window.ethereum.on("chainChanged", () => {
-        window.location.reload();
-      });
+        console.log(data); // total data
+        console.log(miner);
 
-      window.ethereum.on("accountsChanged", () => {
-        window.location.reload();
-      });
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
-      const signer = provider.getSigner();
-      const address = await signer.getAddress();
-      const messageRequested = (await lighthouse.getAuthMessage(address)).data
-        .message;
-      const signedMessage = await signer.signMessage(messageRequested);
-      setUserAccount(accounts[0]);
-      return {
-        signedMessage: signedMessage,
-        publicKey: address,
-      };
+        setMinerDetails(data);
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
-  const revoke = async () => {
-    const sig = await encryptionSignature();
-    const ownerPublicKey = sig.publicKey;
-    const addressToRevoke = [];
-    const fileCID = CID;
-    const ownerSignedMessage = sig.signedMessage;
-
-    const response = await lighthouse.revokeFileAccess(
-      ownerPublicKey,
-      addressToRevoke,
-      fileCID,
-      ownerSignedMessage
-    );
-    console.log(response);
-  };
+  useEffect(() => {
+    getMiners();
+  }, [miner]);
 
   return (
     <div>
-      <button className="mx-3" onClick={() => console.log(router.query.miner)}>
-        get
-      </button>
-      <button onClick={() => revoke()}>Revoke</button>
-      <button onClick={() => decrypt()}>decrypt</button>
-      {fileURL ? (
-        <a href={fileURL} target="_blank">
-          viewFile
-        </a>
-      ) : null}
+      <div className="w-screen">
+        <div className="mt-10">
+          <div className="flex flex-col justify-center mx-auto w-5/6">
+            <div className="grid grid-flow-col grid-rows-2 grid-cols-3 gap-x-20 gap-y-6">
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Miner ID</p>
+                    {minerDetails && (
+                      <p className="mt-4 text-2xl">{minerDetails.miner_id}</p>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Miner Status</p>
+                    {minerDetails && (
+                      <p className="mt-4 text-2xl text-green-500">
+                        {" "}
+                        • {minerDetails.status}
+                      </p>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Miner Location</p>
+                    {minerDetails && (
+                      <p className="mt-4 text-2xl">{minerDetails.location}</p>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Miner Price</p>
+                    {minerDetails && (
+                      <p className="mt-4 text-2xl">
+                        {minerDetails.verified_price}
+                      </p>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Min Piece Size</p>
+                    {minerDetails && (
+                      <p className="mt-4 text-2xl">
+                        {minerDetails.min_piece_size}
+                      </p>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Max Piece Size</p>
+                    {minerDetails && (
+                      <p className="mt-4 text-2xl">
+                        {minerDetails.max_piece_size}
+                      </p>
+                    )}
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+            <Box className="mt-6" position="relative" padding="10">
+              <Divider />
+              <AbsoluteCenter bg="white" px="4">
+                <p className="text-xl text-slate-500">Use This Provider</p>
+              </AbsoluteCenter>
+            </Box>
+            <div className="mt-10">
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

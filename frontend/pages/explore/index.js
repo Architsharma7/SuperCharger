@@ -10,37 +10,22 @@ import {
   TableContainer,
 } from "@chakra-ui/react";
 import dynamic from "next/dynamic";
-import axios from "axios";
 import { useRouter } from "next/router";
+import { getMiners } from "../../components/reputation-service/filswan";
 
 const Explore = () => {
 
   const [apiData, setApiData] = useState([]);
   const router = useRouter()
 
-  const getMiners = async () => {
-    try {
-      const options = {
-        method: "GET",
-        url: "https://api.filswan.com/miners",
-        params: { offset: 0, limit: 20 },
-      };
-      const response = await axios.request(options);
-      const data = response.data.data
-  
-      console.log(data); // total data
-
-      setApiData(data.miner)
-
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  const setMiners = async() => {
+    const data = await getMiners();
+    setApiData(data);
+  }
 
   useEffect(() => {
-    getMiners()
+    setMiners()
   }, [])
-  
   
   return (
     <div className="w-screen">

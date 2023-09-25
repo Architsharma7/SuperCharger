@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
+import { useRouter } from "next/router";
 
 const Dashboard = () => {
   const [file, setFile] = useState([]);
@@ -23,6 +24,11 @@ const Dashboard = () => {
     outputType: "",
     inputArrayType: "",
   });
+
+  const router = useRouter();
+  const [CID, Cid] = useState("");
+  const [fileURL, setFileURL] = useState(null);
+  const [userAccount, setUserAccount] = useState("");
 
   const uploadFile = async () => {
     const dealParams = {
@@ -142,6 +148,43 @@ const Dashboard = () => {
       aggregator
     );
 
+    console.log(response);
+  };
+
+  const decrypt = async () => {
+    const cid = CID; 
+    const { publicKey, signedMessage } = await encryptionSignature();
+    const keyObject = await lighthouse.fetchEncryptionKey(
+      cid,
+      publicKey,
+      signedMessage
+    );
+
+    const fileType = "image/jpeg";
+    const decrypted = await lighthouse.decryptFile(
+      cid,
+      keyObject.data.key,
+      fileType
+    );
+    console.log(decrypted);
+    const url = URL.createObjectURL(decrypted);
+    console.log(url);
+    setFileURL(url);
+  };
+
+  const revoke = async () => {
+    const sig = await encryptionSignature();
+    const ownerPublicKey = sig.publicKey;
+    const addressToRevoke = [];
+    const fileCID = CID;
+    const ownerSignedMessage = sig.signedMessage;
+
+    const response = await lighthouse.revokeFileAccess(
+      ownerPublicKey,
+      addressToRevoke,
+      fileCID,
+      ownerSignedMessage
+    );
     console.log(response);
   };
 
