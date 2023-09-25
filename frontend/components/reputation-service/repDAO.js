@@ -1,16 +1,14 @@
-import { DB, filfox } from "@dataprograms/repdao-polybase";
+import { DB, filrep } from "@dataprograms/repdao-polybase";
 
 const getMiners = async () => {
   try {
-    const doc = await DB.collection("filfox")
-      .where("epoch", "<", 2849899)
-      .sort("epoch", "desc")
-      .limit(2)
-      .get(); // 2 is n
-
-    doc.data.forEach((e) => {
-      console.log(e.data);
+    const doc = await DB.collection("filrep").limit(10).get(); // 2 is n
+    let finalData = [];
+    await doc.data.forEach((e) => {
+      finalData.push(e.data);
     });
+    console.log(finalData);
+    return finalData;
   } catch (error) {
     console.log(error);
   }
