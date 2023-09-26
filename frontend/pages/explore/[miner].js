@@ -16,10 +16,14 @@ import { ethers } from "ethers";
 import { Switch } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import { DB } from "@dataprograms/repdao-polybase";
 
 const SpecificMiners = () => {
   const router = useRouter();
 
+  const [minerDetailsRep, setMinerDetailsRep] = useState(null);
+  const [minerDetailsFox, setMinerDetailsFox] = useState(null);
+  const [minerLocations, setMinerLocation] = useState(null);
   const [minerDetails, setMinerDetails] = useState(null);
   const [dealParameters, setDealParameters] = useState({
     copies: 2,
@@ -47,6 +51,63 @@ const SpecificMiners = () => {
       }
     );
 
+  const getfilerep = async () => {
+    try {
+      if (miner) {
+        const doc = await DB.collection("filrep")
+          .where("provider", "==", `${miner}`)
+          .limit(1)
+          .get(); // 2 is n
+        let finalData = [];
+        await doc.data.forEach((e) => {
+          finalData.push(e.data);
+        });
+        console.log(finalData);
+        setMinerDetailsRep(finalData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getfilfox = async () => {
+    try {
+      if (miner) {
+        const doc = await DB.collection("filfox")
+          .where("provider", "==", `${miner}`)
+          .limit(1)
+          .get();
+        let finalData = [];
+        await doc.data.forEach((e) => {
+          finalData.push(e.data);
+        });
+        console.log(finalData);
+        setMinerDetailsFox(finalData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getMinerLocation = async () => {
+    try {
+      if (miner) {
+        const doc = await DB.collection("ground_control_sp_location")
+          .where("provider", "==", `${miner}`)
+          .limit(1)
+          .get();
+        let finalData = [];
+        await doc.data.forEach((e) => {
+          finalData.push(e.data);
+        });
+        console.log(finalData);
+        setMinerLocation(finalData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const getMiners = async () => {
     try {
       if (miner) {
@@ -69,6 +130,9 @@ const SpecificMiners = () => {
   };
 
   useEffect(() => {
+    // getfilerep();
+    // getfilfox();
+    // getMinerLocation();
     getMiners();
   }, [miner]);
 
