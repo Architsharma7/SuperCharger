@@ -12,7 +12,7 @@ const sleep = require("util").promisify(setTimeout)
 
 const port = 1337
 const contractName = "RassJobHandler"
-const contractInstance = "0x5ffa9Ddd780c845F97468de9081e6E7f7D829978" // The user will also input
+const contractInstance = "0xC37175181265D75ed04f28f3c027cC5fAceF5dAd" // The user will also input
 const EdgeAggregator = require("./edgeAggregator.js")
 const LighthouseAggregator = require("./lighthouseAggregator.js")
 const upload = multer({ dest: "temp/" }) // Temporary directory for uploads
