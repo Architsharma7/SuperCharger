@@ -19,7 +19,7 @@ import "./data-segment/Proof.sol";
 
 // Delta that implements the AggregatorOracle interface
 // name should be deal handler
-contract DealStatus is IAggregatorOracle, Proof {
+contract RassJobHandler is IAggregatorOracle, Proof {
     uint256 private transactionId;
     mapping(uint256 => bytes) private txIdToCid;
     mapping(bytes => Deal[]) private cidToDeals;
@@ -149,14 +149,12 @@ contract DealStatus is IAggregatorOracle, Proof {
         return transactionId;
     }
 
-    function submit(bytes memory _cid) public payable returns (uint256) {
+    function submit(bytes memory _cid) external returns (uint256) {
         // no twice CID registerations are allowed
         require(
             rassJobDatas[_cid].jobStatus == RaasJobStatus.IS_NOT_REGISTERED,
             "JOB ALREADY REGISTERED"
         );
-
-        depositFunds{value: msg.value}(_cid);
 
         rassJobDatas[_cid] = RassJobData(RaasJobStatus.IS_REGISTERED, 0, 0, 0, 0, 0);
 
