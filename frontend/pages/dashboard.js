@@ -23,6 +23,7 @@ const Dashboard = () => {
   const [CID, setCID] = useState("");
   const [fileURL, setFileURL] = useState(null);
   const [userAccount, setUserAccount] = useState("");
+  const [RevokeAddress, setRevokeAddress] = useState("");
 
   const encryptionSignature = async () => {
     const { ethereum } = window;
@@ -134,21 +135,21 @@ const Dashboard = () => {
   const revoke = async () => {
     const sig = await encryptionSignature();
     const ownerPublicKey = sig.publicKey;
-    const addressToRevoke = [];
-    const fileCID = CID;
+    const addressToRevoke = [RevokeAddress];
+    console.log(addressToRevoke)
     const ownerSignedMessage = sig.signedMessage;
 
     const response = await lighthouse.revokeFileAccess(
       ownerPublicKey,
       addressToRevoke,
-      fileCID,
+      CID,
       ownerSignedMessage
     );
     console.log(response);
   };
 
   function downloadBlob() {
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = fileURL;
     a.download = "my-file";
     a.click();
@@ -159,7 +160,7 @@ const Dashboard = () => {
     <div>
       <div className="w-screen">
         <div className="flex flex-col w-5/6 justify-center mx-auto mt-10">
-          <div className="flex">
+          <div className="flex align-middle">
             <div className="w-1/2 mx-10">
               <Card align="center" variant="elevated" size="lg">
                 <CardBody>
@@ -181,10 +182,17 @@ const Dashboard = () => {
                     </button>
                     {fileURL ? (
                       <div className="flex justify-between">
-                        <a href={fileURL} target="_blank" className="mt-5 bg-blue-500 px-6 py-1 rounded-xl text-white mx-3">
+                        <a
+                          href={fileURL}
+                          target="_blank"
+                          className="mt-5 bg-blue-500 px-6 py-1 rounded-xl text-white mx-3"
+                        >
                           View File
                         </a>
-                        <button onClick={() => downloadBlob()} className="mt-5 border-blue-500 border px-6 py-1 mx-3 rounded-xl">
+                        <button
+                          onClick={() => downloadBlob()}
+                          className="mt-5 border-blue-500 border px-6 py-1 mx-3 rounded-xl"
+                        >
                           Download File
                         </button>
                       </div>
@@ -196,9 +204,27 @@ const Dashboard = () => {
             <div className="w-1/2 mx-10">
               <Card align="center" variant="elevated" size="lg">
                 <CardBody>
-                  <div className="flex flex-col text-center">
-                    <p className="text-blue-500 text-4xl">Miner ID</p>
-                    <p className="mt-4 text-2xl">1672627</p>
+                  <div className="flex flex-col">
+                    <p className="text-blue-500 text-4xl text-center">
+                      Revoke Access
+                    </p>
+                    <p className="mt-7 text-2xl">File CID</p>
+                    <input
+                      className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                      type="text"
+                      onChange={(e) => setCID(e.target.value)}
+                    ></input>
+                    <p className="mt-7 text-2xl">Address of user</p>
+                    <input
+                      className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                      type="text"
+                      placeholder="address from which access is being revoked"
+                      onChange={(e) => setRevokeAddress(e.target.value)}
+                    ></input>
+                    <button
+                      onClick={() => revoke()}
+                      className="px-9 py-2 bg-blue-500 text-white text-xl w-full mx-auto rounded-xl mt-6"
+                    >Revoke Access</button>
                   </div>
                 </CardBody>
               </Card>
