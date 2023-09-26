@@ -43,7 +43,7 @@ const SpecificMiners = () => {
         draggable: true,
         progress: undefined,
         theme: "light",
-        type: "success"
+        type: "success",
       }
     );
 
@@ -252,7 +252,7 @@ const SpecificMiners = () => {
               </AbsoluteCenter>
             </Box>
             <div className="mt-10">
-              <Accordion defaultIndex={[0]} allowToggle>
+              <Accordion defaultIndex={[0]} allowToggle={false}>
                 <AccordionItem className="mb-5">
                   <h2>
                     <AccordionButton
@@ -261,7 +261,7 @@ const SpecificMiners = () => {
                       <Box as="span" flex="1" textAlign="left" fontSize="3xl">
                         File Upload
                       </Box>
-                      <AccordionIcon fontSize="3xl" />
+                      {/* <AccordionIcon fontSize="3xl" /> */}
                     </AccordionButton>
                   </h2>
                   <AccordionPanel pt={10} pb={10}>
@@ -357,23 +357,6 @@ const SpecificMiners = () => {
                         </button>
                       </div>
                     </div>
-                  </AccordionPanel>
-                </AccordionItem>
-
-                <AccordionItem>
-                  <h2>
-                    <AccordionButton>
-                      <Box as="span" flex="1" textAlign="left">
-                        Section 2 title
-                      </Box>
-                      <AccordionIcon />
-                    </AccordionButton>
-                  </h2>
-                  <AccordionPanel pb={4}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua. Ut enim ad minim veniam, quis nostrud exercitation
-                    ullamco laboris nisi ut aliquip ex ea commodo consequat.
                   </AccordionPanel>
                 </AccordionItem>
               </Accordion>
