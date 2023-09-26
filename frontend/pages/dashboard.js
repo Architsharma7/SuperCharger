@@ -136,7 +136,7 @@ const Dashboard = () => {
     const sig = await encryptionSignature();
     const ownerPublicKey = sig.publicKey;
     const addressToRevoke = [RevokeAddress];
-    console.log(addressToRevoke)
+    console.log(addressToRevoke);
     const ownerSignedMessage = sig.signedMessage;
 
     const response = await lighthouse.revokeFileAccess(
@@ -224,13 +224,129 @@ const Dashboard = () => {
                     <button
                       onClick={() => revoke()}
                       className="px-9 py-2 bg-blue-500 text-white text-xl w-full mx-auto rounded-xl mt-6"
-                    >Revoke Access</button>
+                    >
+                      Revoke Access
+                    </button>
                   </div>
                 </CardBody>
               </Card>
             </div>
           </div>
-          <div></div>
+          <div className="mt-14 mb-10 w-2/3 mx-auto">
+            <Card align="center" variant="elevated" size="lg">
+              <CardBody>
+                <div className="flex flex-col">
+                  <p className="text-blue-500 text-4xl text-center">
+                    Apply Access Controls
+                  </p>
+                  <p className="mt-7 text-2xl">File CID for access controls</p>
+                  <input
+                    className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                    type="text"
+                    onChange={(e) => setCIDforAC(e.target.value)}
+                  ></input>
+                  <p className="mt-7 text-2xl">Chain</p>
+                  <select
+                    value={ACconditions.chain}
+                    onChange={(e) => {
+                      setACconditions({
+                        ...ACconditions,
+                        chain: e.target.value,
+                      });
+                    }}
+                    className="mt-4 text-xl bg-gray-100 px-3 py-2 rounded-xl cursor-pointer"
+                  >
+                    <option value={"FVM"}>FVM</option>
+                    <option value={"Mumbai"}>Mumbai</option>
+                    <option value={"Ethereum"}>Ethereum</option>
+                    <option value={"Optimism"}>Optimism</option>
+                  </select>
+                  <p className="mt-7 text-2xl">Method</p>
+                  <input
+                    className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                    type="text"
+                    placeholder="eg. balanceOf, getBalance, getBlockNumber"
+                    value={ACconditions.method}
+                    onChange={(e) => {
+                      setACconditions({
+                        ...ACconditions,
+                        method: e.target.value,
+                      });
+                    }}
+                  ></input>
+                  <p className="mt-7 text-2xl">Contract Type</p>
+                  <select
+                    value={ACconditions.ContractType}
+                    onChange={(e) => {
+                      setACconditions({
+                        ...ACconditions,
+                        ContractType: e.target.value,
+                      });
+                    }}
+                    className="mt-4 text-xl bg-gray-100 px-3 py-2 rounded-xl cursor-pointer"
+                  >
+                    <option value={"Custom"}>Custom</option>
+                    <option value={"ERC721"}>ERC721</option>
+                    <option value={"ERC20"}>ERC20</option>
+                  </select>
+                  <p className="mt-7 text-2xl">Contract Address</p>
+                  <input
+                    className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                    type="text"
+                    placeholder=""
+                    value={ACconditions.contractAddress}
+                    onChange={(e) => {
+                      setACconditions({
+                        ...ACconditions,
+                        contractAddress: e.target.value,
+                      });
+                    }}
+                  ></input>
+                  <div className="flex">
+                    <div className="mx-2">
+                      <p className="mt-7 text-2xl">Comparator</p>
+                      <select
+                        value={ACconditions.comparator}
+                        onChange={(e) => {
+                          setACconditions({
+                            ...ACconditions,
+                            comparator: e.target.value,
+                          });
+                        }}
+                        className="mt-4 text-xl bg-gray-100 px-3 py-2 rounded-xl cursor-pointer text-center"
+                      >
+                        <option value={"=="}>==</option>
+                        <option value={"!="}>!=</option>
+                        <option value={">"}>greater than</option>
+                        <option value={"<"}>less than</option>
+                      </select>
+                    </div>
+                    <div className="mx-2">
+                      <p className="mt-7 text-2xl">Value</p>
+                      <input
+                        className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                        type="text"
+                        placeholder=""
+                        value={ACconditions.value}
+                        onChange={(e) => {
+                          setACconditions({
+                            ...ACconditions,
+                            value: e.target.value,
+                          });
+                        }}
+                      ></input>
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => console.log(ACconditions)}
+                    className="px-9 py-2 bg-blue-500 text-white text-xl w-full mx-auto rounded-xl mt-6"
+                  >
+                    Apply Access Controls
+                  </button>
+                </div>
+              </CardBody>
+            </Card>
+          </div>
         </div>
       </div>
     </div>
