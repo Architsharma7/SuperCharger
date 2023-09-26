@@ -11,8 +11,8 @@ const multer = require("multer")
 const sleep = require("util").promisify(setTimeout)
 
 const port = 1337
-const contractName = "DealStatus"
-const contractInstance = "0xa2484Ed60a4e9458BbAe7eFE12c1d25394D97450" // The user will also input
+const contractName = "RassJobHandler"
+const contractInstance = "0x5ffa9Ddd780c845F97468de9081e6E7f7D829978" // The user will also input
 const EdgeAggregator = require("./edgeAggregator.js")
 const LighthouseAggregator = require("./lighthouseAggregator.js")
 const upload = multer({ dest: "temp/" }) // Temporary directory for uploads

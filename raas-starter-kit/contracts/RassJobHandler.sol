@@ -63,6 +63,14 @@ contract RassJobHandler is IAggregatorOracle, Proof {
         _;
     }
 
+    modifier onlyRegisteredCID(bytes memory _cid) {
+        require(
+            rassJobDatas[_cid].jobStatus != RaasJobStatus.IS_NOT_REGISTERED,
+            "JOB NOT REGISTERED"
+        );
+        _;
+    }
+
     function whitelistWorker(address _worker) external onlyOwner {
         isRaasWorker[_worker] = true;
     }
@@ -85,70 +93,6 @@ contract RassJobHandler is IAggregatorOracle, Proof {
         rassJobDatas[_cid].totalAmountSpent += _amount;
     }
 
-    function getRaasData(bytes memory _cid) public returns (RassJobData memory) {
-        return rassJobDatas[_cid];
-    }
-
-    // this will track the replication req timing , and send some reward
-    function submitReplicationRequest(
-        bytes memory _cid
-    ) external onlyWorker returns (uint256 txId) {
-        address worker = msg.sender;
-        transactionId++;
-
-        // Save _cid
-        txIdToCid[transactionId] = _cid;
-
-        // pay out to the worker
-        sendFundsToWorkers(_cid, worker, REPLICATION_JOB_AMOUNT);
-
-        // Add job to data
-        rassJobDatas[_cid].totalReplicationJobsDone += 1;
-
-        // Emit the event
-        emit SubmitAggregatorRequest(transactionId, _cid);
-
-        return transactionId;
-    }
-
-    function submitRenewRequest(bytes memory _cid) external onlyWorker returns (uint256 txId) {
-        address worker = msg.sender;
-
-        transactionId++;
-
-        // Save _cid
-        txIdToCid[transactionId] = _cid;
-
-        // pay out to the worker
-        sendFundsToWorkers(_cid, worker, RENEW_JOB_AMOUNT);
-
-        // Add job to data
-        rassJobDatas[_cid].totalRenewJobsDone += 1;
-
-        // Emit the event
-        emit SubmitAggregatorRequest(transactionId, _cid);
-        return transactionId;
-    }
-
-    function submitRepairRequest(bytes memory _cid) external onlyWorker returns (uint256 txId) {
-        address worker = msg.sender;
-
-        transactionId++;
-
-        // Save _cid
-        txIdToCid[transactionId] = _cid;
-
-        // pay out to the worker
-        sendFundsToWorkers(_cid, worker, REPAIR_JOB_AMOUNT);
-
-        // Add job to data
-        rassJobDatas[_cid].totalRepairJobsDone += 1;
-
-        // Emit the event
-        emit SubmitAggregatorRequest(transactionId, _cid);
-        return transactionId;
-    }
-
     function submit(bytes memory _cid) external returns (uint256) {
         // no twice CID registerations are allowed
         require(
@@ -169,6 +113,70 @@ contract RassJobHandler is IAggregatorOracle, Proof {
         return transactionId;
     }
 
+    // this will track the replication req timing , and send some reward
+    function submitReplicationRequest(
+        bytes memory _cid
+    ) external onlyWorker onlyRegisteredCID(_cid) returns (uint256 txId) {
+        address worker = msg.sender;
+        transactionId++;
+
+        // Save _cid
+        txIdToCid[transactionId] = _cid;
+
+        // pay out to the worker
+        sendFundsToWorkers(_cid, worker, REPLICATION_JOB_AMOUNT);
+
+        // Add job to data
+        rassJobDatas[_cid].totalReplicationJobsDone += 1;
+
+        // Emit the event
+        emit SubmitAggregatorRequest(transactionId, _cid);
+
+        return transactionId;
+    }
+
+    function submitRenewRequest(
+        bytes memory _cid
+    ) external onlyWorker onlyRegisteredCID(_cid) returns (uint256 txId) {
+        address worker = msg.sender;
+
+        transactionId++;
+
+        // Save _cid
+        txIdToCid[transactionId] = _cid;
+
+        // pay out to the worker
+        sendFundsToWorkers(_cid, worker, RENEW_JOB_AMOUNT);
+
+        // Add job to data
+        rassJobDatas[_cid].totalRenewJobsDone += 1;
+
+        // Emit the event
+        emit SubmitAggregatorRequest(transactionId, _cid);
+        return transactionId;
+    }
+
+    function submitRepairRequest(
+        bytes memory _cid
+    ) external onlyWorker onlyRegisteredCID(_cid) returns (uint256 txId) {
+        address worker = msg.sender;
+
+        transactionId++;
+
+        // Save _cid
+        txIdToCid[transactionId] = _cid;
+
+        // pay out to the worker
+        sendFundsToWorkers(_cid, worker, REPAIR_JOB_AMOUNT);
+
+        // Add job to data
+        rassJobDatas[_cid].totalRepairJobsDone += 1;
+
+        // Emit the event
+        emit SubmitAggregatorRequest(transactionId, _cid);
+        return transactionId;
+    }
+
     function complete(
         uint256 _id,
         uint64 _dealId,
@@ -182,6 +190,8 @@ contract RassJobHandler is IAggregatorOracle, Proof {
 
         // save the _dealId if it is not already saved
         bytes memory cid = txIdToCid[_id];
+        require(rassJobDatas[cid].jobStatus == RaasJobStatus.IS_REGISTERED, "JOB NOT REGISTERED");
+
         for (uint256 i = 0; i < cidToDeals[cid].length; i++) {
             if (cidToDeals[cid][i].dealId == _dealId) {
                 return this.computeExpectedAuxData(_proof, _verifierData);
@@ -190,10 +200,15 @@ contract RassJobHandler is IAggregatorOracle, Proof {
 
         Deal memory deal = Deal(_dealId, _minerId);
         cidToDeals[cid].push(deal);
+        rassJobDatas[cid].jobStatus == RaasJobStatus.IS_COMPLETED;
 
         // Perform validation logic
         // return this.computeExpectedAuxDataWithDeal(_dealId, _proof, _verifierData);
         return this.computeExpectedAuxData(_proof, _verifierData);
+    }
+
+    function getRaasData(bytes memory _cid) public view returns (RassJobData memory) {
+        return rassJobDatas[_cid];
     }
 
     // allDealIds should return all the deal ids created by the aggregator

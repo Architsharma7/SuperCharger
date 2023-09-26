@@ -1,5 +1,26 @@
+// Extra with Deal status
 // Cid deployed to: 0x01302696757447c7d771a29b04509E3Fe33Fb55E
 // Deploying Proof...
 // Proof deployed to: 0x9D0CF5672A4FFfaa6BA58DB070Ae1Da8D0F130af
 // Deploying DealStatus...
 // DealStatus deployed to: 0xa2484Ed60a4e9458BbAe7eFE12c1d25394D97450
+
+//Extras with RaasHandler name
+// Deploying the contracts with the account: 0x62C43323447899acb61C18181e34168903E033Bf
+// Account balance: 99226524260229242200
+// Wallet Ethereum Address: 0x62C43323447899acb61C18181e34168903E033Bf
+// Deploying Cid...
+// Cid deployed to: 0xDD6662f373f8BD7150f072BC2dCF4b24Ab942b67
+// Deploying Proof...
+// Proof deployed to: 0xcb56CD817eE7404d400f2F3d4241CB94d4f91FdB
+// Deploying DealStatus...
+// DealStatus deployed to: 0x5ffa9Ddd780c845F97468de9081e6E7f7D829978
+
+// Extras , Raashandler , after all changes
+// Wallet Ethereum Address: 0x62C43323447899acb61C18181e34168903E033Bf
+// Deploying Cid...
+// Cid deployed to: 0xbD869bCa73c7b3eC32a12ac9eD448e671BeCBFaa
+// Deploying Proof...
+// Proof deployed to: 0x2e23eD115853411e117B59431f8Ee27AAE4e27d9
+// Deploying DealStatus...
+// DealStatus deployed to: 0xC37175181265D75ed04f28f3c027cC5fAceF5dAd
