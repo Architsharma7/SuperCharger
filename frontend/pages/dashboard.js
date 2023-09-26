@@ -2,16 +2,10 @@ import React, { useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
+import { Card, CardBody, AbsoluteCenter, Box } from "@chakra-ui/react";
 
 const Dashboard = () => {
-  const [file, setFile] = useState([]);
-  const [encryptionOn, setEncryptionOn] = useState(false);
   const [account, setAccount] = useState("");
-  const [dealParameters, setDealParameters] = useState({
-    copies: 2,
-    repair_thresh: 28800,
-    renew_thresh: 240,
-  });
   const [CIDForAC, setCIDforAC] = useState("");
   const [ACconditions, setACconditions] = useState({
     chain: "",
@@ -26,30 +20,9 @@ const Dashboard = () => {
   });
 
   const router = useRouter();
-  const [CID, Cid] = useState("");
+  const [CID, setCID] = useState("");
   const [fileURL, setFileURL] = useState(null);
   const [userAccount, setUserAccount] = useState("");
-
-  const uploadFile = async () => {
-    const dealParams = {
-      num_copies: dealParameters.copies,
-      repair_threshold: dealParameters.repair_thresh, // 2880 = 1 day
-      renew_threshold: dealParameters.renew_thresh,
-      miner: [""], //router.query.miner //"t017840" 
-      network: "calibration",
-      add_mock_data: 2,
-    };
-
-    const response = await lighthouse.upload(
-      file,
-      process.env.NEXT_PUBLIC_API_KEY,
-      false
-      /* dealParams*/
-    );
-    console.log(
-      `https://gateway.lighthouse.storage/ipfs/${response.data.Hash}`
-    );
-  };
 
   const encryptionSignature = async () => {
     const { ethereum } = window;
@@ -81,20 +54,6 @@ const Dashboard = () => {
         publicKey: address,
       };
     }
-  };
-
-  const uploadFileEncrypted = async () => {
-    const sig = await encryptionSignature();
-    const response = await lighthouse.uploadEncrypted(
-      file,
-      process.env.NEXT_PUBLIC_API_KEY,
-      sig.publicKey,
-      sig.signedMessage,
-      null //dealParams
-    );
-    console.log(response.data);
-    const { Hash } = response.data[0];
-    console.log(`https://gateway.lighthouse.storage/ipfs/${Hash}`);
   };
 
   const conditionsforAC = () => {
@@ -152,24 +111,24 @@ const Dashboard = () => {
   };
 
   const decrypt = async () => {
-    const cid = CID; 
+    console.log(CID);
     const { publicKey, signedMessage } = await encryptionSignature();
     const keyObject = await lighthouse.fetchEncryptionKey(
-      cid,
+      CID,
       publicKey,
       signedMessage
     );
 
     const fileType = "image/jpeg";
     const decrypted = await lighthouse.decryptFile(
-      cid,
+      CID,
       keyObject.data.key,
       fileType
     );
     console.log(decrypted);
     const url = URL.createObjectURL(decrypted);
-    console.log(url);
     setFileURL(url);
+    console.log(url);
   };
 
   const revoke = async () => {
@@ -188,26 +147,66 @@ const Dashboard = () => {
     console.log(response);
   };
 
+  function downloadBlob() {
+    const a = document.createElement('a');
+    a.href = fileURL;
+    a.download = "my-file";
+    a.click();
+    window.URL.revokeObjectURL(fileURL);
+  }
+
   return (
     <div>
-      <input onChange={(e) => setFile(e.target.files)} type="file" />
-      <button
-        onClick={() => {
-          encryptionOn ? uploadFileEncrypted(file) : uploadFile(file);
-        }}
-      >
-        Upload
-      </button>
-      <button onClick={() => setEncryptionOn(!encryptionOn)} className="mx-10">
-        Change Encrypiton
-      </button>
-      <button
-        onClick={() => {
-          applyAccessConditions();
-        }}
-      >
-        Apply Access Conditions
-      </button>
+      <div className="w-screen">
+        <div className="flex flex-col w-5/6 justify-center mx-auto mt-10">
+          <div className="flex">
+            <div className="w-1/2 mx-10">
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col">
+                    <p className="text-blue-500 text-4xl text-center">
+                      Decrypt a &nbsp;File
+                    </p>
+                    <p className="mt-7 text-2xl">File CID</p>
+                    <input
+                      className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                      type="text"
+                      onChange={(e) => setCID(e.target.value)}
+                    ></input>
+                    <button
+                      onClick={() => decrypt()}
+                      className="px-9 py-2 bg-blue-500 text-white text-xl w-2/3 mx-auto rounded-xl mt-6"
+                    >
+                      Decrypt
+                    </button>
+                    {fileURL ? (
+                      <div className="flex justify-between">
+                        <a href={fileURL} target="_blank" className="mt-5 bg-blue-500 px-6 py-1 rounded-xl text-white mx-3">
+                          View File
+                        </a>
+                        <button onClick={() => downloadBlob()} className="mt-5 border-blue-500 border px-6 py-1 mx-3 rounded-xl">
+                          Download File
+                        </button>
+                      </div>
+                    ) : null}
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+            <div className="w-1/2 mx-10">
+              <Card align="center" variant="elevated" size="lg">
+                <CardBody>
+                  <div className="flex flex-col text-center">
+                    <p className="text-blue-500 text-4xl">Miner ID</p>
+                    <p className="mt-4 text-2xl">1672627</p>
+                  </div>
+                </CardBody>
+              </Card>
+            </div>
+          </div>
+          <div></div>
+        </div>
+      </div>
     </div>
   );
 };

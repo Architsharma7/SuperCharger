@@ -152,8 +152,8 @@ const SpecificMiners = () => {
     );
     console.log(response.data);
     const { Hash } = response.data[0];
-    console.log(`https://gateway.lighthouse.storage/ipfs/${Hash}`);
     setFileHash(Hash);
+    console.log(`https://gateway.lighthouse.storage/ipfs/${Hash}`);
     notify();
   };
 
