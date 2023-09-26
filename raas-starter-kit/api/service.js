@@ -212,7 +212,7 @@ async function executeReplicationJob(job) {
             await sleep(2000000)
             try {
                 console.log(`Submitting replication deal`)
-                await dealStatus.submit(ethers.utils.toUtf8Bytes(job.cid))
+                await dealStatus.submitReplicationRequest(ethers.utils.toUtf8Bytes(job.cid))
                 // Wait a minute before submitting another.
             } catch (error) {
                 console.log("Error replicating: ", error)
@@ -236,7 +236,7 @@ async function executeRenewalJob(job) {
     console.log(`Deal ${job.cid} has ${expiringDeals.length} expiring deals: renewing (if any).`)
     for (let i = 0; i < expiringDeals.length; i++) {
         try {
-            await dealStatus.submit(ethers.utils.toUtf8Bytes(job.cid))
+            await dealStatus.submitRenewRequest(ethers.utils.toUtf8Bytes(job.cid))
             await sleep(20000)
         } catch (error) {
             console.log("Error renewing: ", error)
@@ -281,7 +281,7 @@ async function executeRepairJob(job) {
             currentBlockHeight - response.data.result.State.SlashEpoch > job.epochs
         ) {
             try {
-                await dealStatus.submit(ethers.utils.toUtf8Bytes(job.cid))
+                await dealStatus.submitRepairRequest(ethers.utils.toUtf8Bytes(job.cid))
             } catch (error) {
                 console.log("Error repairing: ", error)
             }
