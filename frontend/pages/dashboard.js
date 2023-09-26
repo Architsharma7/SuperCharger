@@ -3,6 +3,8 @@ import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { Card, CardBody, AbsoluteCenter, Box } from "@chakra-ui/react";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Dashboard = () => {
   const [account, setAccount] = useState("");
@@ -24,6 +26,32 @@ const Dashboard = () => {
   const [fileURL, setFileURL] = useState(null);
   const [userAccount, setUserAccount] = useState("");
   const [RevokeAddress, setRevokeAddress] = useState("");
+
+  const notifyforRevoke = () =>
+    toast(`Revoked access for ${RevokeAddress}`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      type: "success",
+    });
+
+    const notifyforAC = () =>
+    toast(`Applied access Controls for ${CIDForAC}`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      type: "success",
+    });
 
   const encryptionSignature = async () => {
     const { ethereum } = window;
@@ -109,6 +137,8 @@ const Dashboard = () => {
     );
 
     console.log(response);
+
+    notifyforAC();
   };
 
   const decrypt = async () => {
@@ -146,6 +176,8 @@ const Dashboard = () => {
       ownerSignedMessage
     );
     console.log(response);
+
+    notifyforRevoke()
   };
 
   function downloadBlob() {
@@ -159,6 +191,18 @@ const Dashboard = () => {
   return (
     <div>
       <div className="w-screen">
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="flex flex-col w-5/6 justify-center mx-auto mt-10">
           <div className="flex align-middle">
             <div className="w-1/2 mx-10">
@@ -338,7 +382,7 @@ const Dashboard = () => {
                     </div>
                   </div>
                   <button
-                    onClick={() => console.log(ACconditions)}
+                    onClick={() => applyAccessConditions()}
                     className="px-9 py-2 bg-blue-500 text-white text-xl w-full mx-auto rounded-xl mt-6"
                   >
                     Apply Access Controls
