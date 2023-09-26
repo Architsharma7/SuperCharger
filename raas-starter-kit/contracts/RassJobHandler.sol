@@ -100,7 +100,14 @@ contract RassJobHandler is IAggregatorOracle, Proof {
             "JOB ALREADY REGISTERED"
         );
 
-        rassJobDatas[_cid] = RassJobData(RaasJobStatus.IS_REGISTERED, 0, 0, 0, 0, 0);
+        rassJobDatas[_cid] = RassJobData(
+            RaasJobStatus.IS_REGISTERED,
+            0,
+            0,
+            0,
+            0,
+            raasJobDeposit[_cid]
+        );
 
         // Increment the transaction ID
         transactionId++;
