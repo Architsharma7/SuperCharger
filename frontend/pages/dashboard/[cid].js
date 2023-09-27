@@ -6,7 +6,8 @@ import {
   registerRaasJob,
 } from "../../components/raasApiMethods";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
-import { parseEther, toBytes, stringToBytes, toHex } from "viem";
+import { writeContract, readContract } from "@wagmi/core";
+import { parseEther, toBytes, stringToBytes, toHex, formatEther } from "viem";
 import {
   RAAS_HANDLER_ABI,
   RAAS_HANDLER_ADDRESS,
@@ -57,6 +58,7 @@ const Cid = () => {
   const [amount, setAmount] = useState("");
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
 
   useEffect(() => {
     getpodsiData();
@@ -72,7 +74,7 @@ const Cid = () => {
   const getRaasDeals = async (cid) => {
     if (!cid) return;
     const data = await publicClient.readContract({
-      address: `0xC37175181265D75ed04f28f3c027cC5fAceF5dAd`,
+      address: RAAS_HANDLER_ADDRESS,
       abi: RAAS_HANDLER_ABI,
       functionName: "getRaasData",
       args: [`${toHex(cid)}`],
@@ -80,8 +82,8 @@ const Cid = () => {
     console.log(data);
     setRaasDeals({
       jobstatus: data.jobStatus,
-      amountdeposited: formatBigInt(data.totalAmountDeposited),
-      amountspent: formatBigInt(data.totalAmountSpent),
+      amountdeposited: formatEther(formatBigInt(data.totalAmountDeposited)),
+      amountspent: formatEther(formatBigInt(data.totalAmountSpent)),
       renew: formatBigInt(data.totalRenewJobsDone),
       repair: formatBigInt(data.totalRepairJobsDone),
       replication: formatBigInt(data.totalReplicationJobsDone),
@@ -93,7 +95,6 @@ const Cid = () => {
     const data = await getPODSIdetails(cid);
     console.log(data);
     setPodsiDealInfo(data);
-    console.log(data);
     // getMinerLocation(data);
   };
 
@@ -119,6 +120,44 @@ const Cid = () => {
       console.log(error);
     }
   };
+
+  const depositFunds = async (cid, value) => {
+    try {
+      const data = await publicClient.simulateContract({
+        account,
+        address: RAAS_HANDLER_ADDRESS,
+        abi: RAAS_HANDLER_ABI,
+        functionName: "depositFunds",
+        args: [`${toHex(cid)}`],
+        value: parseEther(value),
+      });
+      if (!walletClient) {
+        return;
+      }
+      console.log(account);
+      const tx = await walletClient.writeContract(data.request);
+      console.log("Transaction Sent");
+      const transaction = await publicClient.waitForTransactionReceipt({
+        hash: tx,
+      });
+      console.log(transaction);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  // const register = async (_cid, _endDate, _Copies, _aggregator, _epoch) => {
+  //   const requestReceivedTime = new Date();
+  //   // Default end date is 1 month from the request received time
+  //   const defaultEndDate = requestReceivedTime.setMonth(
+  //     requestReceivedTime.getMonth() + 1
+  //   );
+  //   console.log(defaultEndDate);
+  //   console.log(requestReceivedTime);
+  //   console.log(Date.now());
+
+  //   console.log(raasjob);
+  // };
 
   return (
     <div>
@@ -154,7 +193,12 @@ const Cid = () => {
                     </Tr>
                     <Tr>
                       <Td>Miner ID</Td>
-                      <Td>{podsiDealInfo ? podsiDealInfo.dealInfo[0].storageProvider : `not found`}</Td>
+                      <Td>
+                        {podsiDealInfo &&
+                          (podsiDealInfo.dealInfo.length
+                            ? podsiDealInfo.dealInfo[0].storageProvider
+                            : `not found`)}
+                      </Td>
                     </Tr>
                     <Tr>
                       <Td>Geo Location of Miner</Td>
@@ -176,48 +220,59 @@ const Cid = () => {
                   <AccordionPanel pb={4}>
                     <TableContainer className="">
                       <Table variant="simple">
-                        <Tbody>
-                          <Tr>
-                            <Td>Car File Size</Td>
-                            <Td>
-                              {podsiDealInfo && podsiDealInfo.carFileSize}
-                            </Td>
-                          </Tr>
-                          <Tr>
-                            <Td>piece CID</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.pieceCID}</Td>
-                          </Tr>
-                          <Tr>
-                            <Td>ID</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.id}</Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Last Updated</Td>
-                            <Td>
-                              {podsiDealInfo && podsiDealInfo.proof.lastUpdate}
-                            </Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Piece Size</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.pieceSize}</Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Proof Index</Td>
-                            <Td>
-                              {podsiDealInfo &&
-                                podsiDealInfo.proof.fileProof.inclusionProof
-                                  .proofIndex.index}
-                            </Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Verifier ID</Td>
-                            <Td>
-                              {podsiDealInfo &&
-                                podsiDealInfo.proof.fileProof.verifierData
-                                  .commPc}
-                            </Td>
-                          </Tr>
-                        </Tbody>
+                        {podsiDealInfo && (
+                          <Tbody>
+                            <Tr>
+                              <Td>Car File Size</Td>
+                              <Td>
+                                {podsiDealInfo.carFileSize &&
+                                  podsiDealInfo.carFileSize}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>piece CID</Td>
+                              <Td>
+                                {podsiDealInfo.pieceCID &&
+                                  podsiDealInfo.pieceCID}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>ID</Td>
+                              <Td>
+                                {podsiDealInfo.proof && podsiDealInfo.proof.id}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Last Updated</Td>
+                              <Td>
+                                {podsiDealInfo.proof &&
+                                  podsiDealInfo.proof.lastUpdate}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Piece Size</Td>
+                              <Td>
+                                {podsiDealInfo.proof && podsiDealInfo.pieceSize}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Proof Index</Td>
+                              <Td>
+                                {podsiDealInfo.proof &&
+                                  podsiDealInfo.proof.fileProof.inclusionProof
+                                    .proofIndex.index}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Verifier ID</Td>
+                              <Td>
+                                {podsiDealInfo.proof &&
+                                  podsiDealInfo.proof.fileProof.verifierData
+                                    .commPc}
+                              </Td>
+                            </Tr>
+                          </Tbody>
+                        )}
                       </Table>
                     </TableContainer>
                   </AccordionPanel>
@@ -275,10 +330,10 @@ const Cid = () => {
                         }}
                         className="mt-4 text-xl w-full bg-gray-100 px-3 py-2 rounded-xl cursor-pointer"
                       >
-                        <option value={"Replication"}>Replication</option>
-                        <option value={"Renew"}>Renew</option>
-                        <option value={"Repair"}>Repair</option>
-                        <option value={"All"}>All</option>
+                        <option value={"replication"}>Replication</option>
+                        <option value={"renew"}>Renew</option>
+                        <option value={"repair"}>Repair</option>
+                        <option value={"all"}>All</option>
                       </select>
                       <div className="mt-5">
                         <p className="text-xl">Number of Copies</p>
