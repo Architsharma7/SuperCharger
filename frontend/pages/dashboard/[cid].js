@@ -33,6 +33,7 @@ import {
 } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
 import { DB } from "@dataprograms/repdao-polybase";
+import { ToastContainer, toast } from "react-toastify";
 
 const Cid = () => {
   const router = useRouter();
@@ -70,6 +71,34 @@ const Cid = () => {
     const formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     return formattedNumber;
   }
+
+  const notify1 = () => {
+    toast(`Deal made and sent to miner`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      type: "success",
+    });
+  };
+
+  const notify2 = (url) => {
+    toast(`Deposited ${url}`, {
+      position: "top-right",
+      autoClose: 3000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined,
+      theme: "light",
+      type: "success",
+    });
+  };
 
   const getRaasDeals = async (cid) => {
     if (!cid) return;
@@ -141,6 +170,7 @@ const Cid = () => {
         hash: tx,
       });
       console.log(transaction);
+      notify2(transaction)
     } catch (error) {
       console.log(error);
     }
@@ -162,6 +192,18 @@ const Cid = () => {
   return (
     <div>
       <div className="w-screen">
+        <ToastContainer
+          position="top-right"
+          autoClose={3000}
+          hideProgressBar={false}
+          newestOnTop={false}
+          closeOnClick
+          rtl={false}
+          pauseOnFocusLoss
+          draggable
+          pauseOnHover
+          theme="light"
+        />
         <div className="flex justify-center mx-auto mt-10">
           <p className="text-3xl text-blue-500">File Details and RAAS</p>
         </div>
@@ -299,7 +341,7 @@ const Cid = () => {
                   </div>
                   <div className="mt-5 w-full flex">
                     <button
-                      onClick={() => depositFunds(cid, amount)}
+                      onClick={() => {depositFunds(cid, amount)}}
                       className="text-blue-500 border border-blue-500 px-10 py-2 rounded-xl mx-auto text-center items-center"
                     >
                       Deposit
@@ -397,15 +439,16 @@ const Cid = () => {
                       </div>
                       <div className="mt-5 w-full flex">
                         <button
-                          onClick={() =>
+                          onClick={() => {
                             registerRaasJob(
                               cid,
                               raasjob.enddate,
                               raasjob.copies,
                               raasjob.aggregator,
                               raasjob.epochs
-                            )
-                          }
+                            );
+                            notify1()
+                          }}
                           className="text-blue-500 border border-blue-500 px-10 py-2 rounded-xl mx-auto text-center items-center"
                         >
                           Attach
