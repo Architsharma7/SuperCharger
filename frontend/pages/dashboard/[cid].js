@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import {
+  depositFunds,
   getPODSIdetails,
   registerRaasJob,
 } from "../../components/raasApiMethods";
@@ -52,6 +53,8 @@ const Cid = () => {
     repair: "",
     replication: "",
   });
+
+  const [amount, setAmount] = useState("");
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
 
@@ -211,6 +214,35 @@ const Cid = () => {
                 </AccordionItem>
               </Accordion>
             </div>
+            <Card className="mt-10 mb-10">
+              <CardBody>
+                <div className="flex flex-col">
+                  <p className="text-blue-500 text-2xl text-center">
+                    Deposit Funds
+                  </p>
+                  <div className="mt-5">
+                    <p className="text-xl">Amount</p>
+                    <input
+                      onChange={(e) => {
+                        setAmount(e.target.value);
+                      }}
+                      className="border border-black mt-4 px-3 w-full py-1.5 rounded-xl"
+                      type="number"
+                      placeholder="amount in FIL"
+                      value={amount}
+                    ></input>
+                  </div>
+                  <div className="mt-5 w-full flex">
+                    <button
+                      onClick={() => depositFunds(cid, amount)}
+                      className="text-blue-500 border border-blue-500 px-10 py-2 rounded-xl mx-auto text-center items-center"
+                    >
+                      Deposit
+                    </button>
+                  </div>
+                </div>
+              </CardBody>
+            </Card>
           </div>
           <Divider orientation="vertical" />
           <div className="w-1/2 mt-10 mx-14">
