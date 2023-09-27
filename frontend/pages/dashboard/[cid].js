@@ -153,6 +153,10 @@ const Cid = () => {
                       <Td>{raasDeals.amountspent && raasDeals.amountspent}</Td>
                     </Tr>
                     <Tr>
+                      <Td>Miner ID</Td>
+                      <Td>{podsiDealInfo ? podsiDealInfo.dealInfo[0].storageProvider : `not found`}</Td>
+                    </Tr>
+                    <Tr>
                       <Td>Geo Location of Miner</Td>
                       <Td>{minerLocations ? minerLocations : `null`}</Td>
                     </Tr>
