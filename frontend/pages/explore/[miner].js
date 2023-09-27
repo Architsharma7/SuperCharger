@@ -17,6 +17,8 @@ import { Switch } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { DB } from "@dataprograms/repdao-polybase";
+import { db } from "../../components/dataStore";
+import { setDoc, doc, updateDoc, arrayUnion } from "firebase/firestore";
 
 const SpecificMiners = () => {
   const router = useRouter();
@@ -33,6 +35,7 @@ const SpecificMiners = () => {
   const [encryptionOn, setEncryptionOn] = useState(false);
   const [account, setAccount] = useState("");
   const [fileHash, setFileHash] = useState("");
+  const [address, setAddress] = useState("");
 
   const { miner } = router.query;
   const notify = () =>
@@ -134,9 +137,36 @@ const SpecificMiners = () => {
     // getfilfox();
     // getMinerLocation();
     getMiners();
+    getUserAddress();
   }, [miner]);
 
   const { acceptedFiles, getRootProps, getInputProps } = useDropzone();
+
+  const getUserAddress = async () => {
+    const { ethereum } = window;
+
+    if (!ethereum) {
+      alert("please install metamask");
+    }
+    if (ethereum) {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+      });
+
+      window.ethereum.on("accountsChanged", () => {
+        window.location.reload();
+      });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      console.log(address);
+      setAddress(address);
+    }
+  };
 
   const uploadFile = async () => {
     const dealParams = {
@@ -158,6 +188,17 @@ const SpecificMiners = () => {
       `https://gateway.lighthouse.storage/ipfs/${response.data.Hash}`
     );
     setFileHash(response.data.Hash);
+    // await setDoc(
+    //   doc(db, "UsersCIDs", `${address}`),
+    //   {
+    //     cid: [],
+    //   },
+    //   { merge: true }
+    // );
+    const ref = doc(db, "UsersCIDs", `${address}`);
+    await updateDoc(ref, {
+      cid: arrayUnion(`${fileHash}`),
+    });
     notify();
   };
 
@@ -218,6 +259,10 @@ const SpecificMiners = () => {
     const { Hash } = response.data[0];
     setFileHash(Hash);
     console.log(`https://gateway.lighthouse.storage/ipfs/${Hash}`);
+    const ref = doc(db, "UsersCIDs", `${address}`);
+    await updateDoc(ref, {
+      cid: arrayUnion(`${Hash}`),
+    });
     notify();
   };
 

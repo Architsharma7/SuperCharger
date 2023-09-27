@@ -1,7 +1,10 @@
-import RepDao from "../components/reputation-service/repDAO";
+import { getCid, setCID } from "../components/dataStore";
 
 export default function Home() {
-  return <div>
-<RepDao/>
-  </div>;
+  return (
+    <div>
+      <button>call</button>
+      <button onClick={() => getCid()}>get</button>
+    </div>
+  );
 }

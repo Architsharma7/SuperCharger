@@ -1,10 +1,23 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import lighthouse from "@lighthouse-web3/sdk";
 import { ethers } from "ethers";
 import { useRouter } from "next/router";
 import { Card, CardBody, AbsoluteCenter, Box } from "@chakra-ui/react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import {
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  TableCaption,
+  TableContainer,
+  Divider,
+} from "@chakra-ui/react";
+import { getDoc, doc } from "firebase/firestore";
+import { db } from "../../components/dataStore";
 
 const Dashboard = () => {
   const [account, setAccount] = useState("");
@@ -26,6 +39,8 @@ const Dashboard = () => {
   const [fileURL, setFileURL] = useState(null);
   const [userAccount, setUserAccount] = useState("");
   const [RevokeAddress, setRevokeAddress] = useState("");
+  const [address, setAddress] = useState("");
+  const [cidData, setCidData] = useState([]);
 
   const notifyforRevoke = () =>
     toast(`Revoked access for ${RevokeAddress}`, {
@@ -40,7 +55,7 @@ const Dashboard = () => {
       type: "success",
     });
 
-    const notifyforAC = () =>
+  const notifyforAC = () =>
     toast(`Applied access Controls for ${CIDForAC}`, {
       position: "top-right",
       autoClose: 3000,
@@ -177,7 +192,7 @@ const Dashboard = () => {
     );
     console.log(response);
 
-    notifyforRevoke()
+    notifyforRevoke();
   };
 
   function downloadBlob() {
@@ -187,6 +202,57 @@ const Dashboard = () => {
     a.click();
     window.URL.revokeObjectURL(fileURL);
   }
+
+  useEffect(() => {
+    getUserAddress();
+  }, []);
+
+  useEffect(() => {
+    getCids();
+  }, [address]);
+
+  const getUserAddress = async () => {
+    const { ethereum } = window;
+
+    if (!ethereum) {
+      alert("please install metamask");
+    }
+    if (ethereum) {
+      const accounts = await ethereum.request({
+        method: "eth_requestAccounts",
+      });
+
+      window.ethereum.on("chainChanged", () => {
+        window.location.reload();
+      });
+
+      window.ethereum.on("accountsChanged", () => {
+        window.location.reload();
+      });
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const signer = provider.getSigner();
+      const address = await signer.getAddress();
+      console.log(address);
+      setAddress(address);
+    }
+  };
+
+  const getCids = async () => {
+    try {
+      if (address) {
+        const ref = doc(db, "UsersCIDs", `${address}`);
+        const docSnap = await getDoc(ref);
+        if (docSnap.exists()) {
+          console.log("Document data:", docSnap.data().cid);
+          setCidData(docSnap.data().cid);
+        } else {
+          console.log("No such document!");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -204,7 +270,38 @@ const Dashboard = () => {
           theme="light"
         />
         <div className="flex flex-col w-5/6 justify-center mx-auto mt-10">
-          <div className="flex align-middle">
+          <TableContainer className="mb-10 justify-center mx-auto">
+            <Table variant="simple">
+              <TableCaption>CIDs for the user</TableCaption>
+              <Thead>
+                <Tr>
+                  <Th fontSize="3xl">CIDs</Th>
+                </Tr>
+              </Thead>
+              <Tbody>
+                {cidData ? (
+                  cidData.map((data) => {
+                    return (
+                      <Tr>
+                        <Td>
+                          <a href={`/dashboard/${data}`} className="text-blue-500 cursor-pointer text-2xl">{data}</a>
+                        </Td>
+                      </Tr>
+                    );
+                  })
+                ) : (
+                  <div></div>
+                )}
+              </Tbody>
+            </Table>
+          </TableContainer>
+          <Box position="relative" padding="10">
+            <Divider />
+            <AbsoluteCenter bg="white" px="4">
+              <p className="text-slate-500">Some Functions</p>
+            </AbsoluteCenter>
+          </Box>
+          <div className="flex align-middle mt-10">
             <div className="w-1/2 mx-10">
               <Card align="center" variant="elevated" size="lg">
                 <CardBody>
