@@ -44,6 +44,14 @@ const Cid = () => {
     aggregator: "lighthouse",
     epochs: "",
   });
+  const [raasDeals, setRaasDeals] = useState({
+    jobstatus: "",
+    amountspent: "",
+    amountdeposited: "",
+    renew: "",
+    repair: "",
+    replication: "",
+  });
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
 
@@ -61,6 +69,14 @@ const Cid = () => {
       args: [`${toHex(cid)}`],
     });
     console.log(data);
+    setRaasDeals({
+      jobstatus: data.jobStatus,
+      amountdeposited: data.totalAmountDeposited,
+      amountspent: data.totalAmountSpent,
+      renew: data.totalRenewJobsDone,
+      repair: data.totalRepairJobsDone,
+      replication: data.totalReplicationJobsDone,
+    });
   };
 
   const getpodsiData = async () => {
@@ -113,19 +129,19 @@ const Cid = () => {
                     </Tr>
                     <Tr>
                       <Td>Total Repair Jobs</Td>
-                      <Td>centimetres (cm)</Td>
+                      <Td>{raasDeals.repair && raasDeals.repair}</Td>
                     </Tr>
                     <Tr>
                       <Td>Total Renew Jobs</Td>
-                      <Td>metres (m)</Td>
+                      <Td>{raasDeals.renew && raasDeals.renew}</Td>
                     </Tr>
                     <Tr>
                       <Td>Total Replication Job</Td>
-                      <Td>metres (m)</Td>
+                      <Td>{raasDeals.replication && raasDeals.replication}</Td>
                     </Tr>
                     <Tr>
                       <Td>Total Amount Spent</Td>
-                      <Td>metres (m)</Td>
+                      <Td>{raasDeals.amountspent && raasDeals.amountspent}</Td>
                     </Tr>
                     <Tr>
                       <Td>Geo Location of Miner</Td>
@@ -182,7 +198,11 @@ const Cid = () => {
                           </Tr>
                           <Tr>
                             <Td>Verifier ID</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.fileProof.verifierData.commPc}</Td>
+                            <Td>
+                              {podsiDealInfo &&
+                                podsiDealInfo.proof.fileProof.verifierData
+                                  .commPc}
+                            </Td>
                           </Tr>
                         </Tbody>
                       </Table>
@@ -216,6 +236,7 @@ const Cid = () => {
                         <option value={"Replication"}>Replication</option>
                         <option value={"Renew"}>Renew</option>
                         <option value={"Repair"}>Repair</option>
+                        <option value={"All"}>All</option>
                       </select>
                       <div className="mt-5">
                         <p className="text-xl">Number of Copies</p>
