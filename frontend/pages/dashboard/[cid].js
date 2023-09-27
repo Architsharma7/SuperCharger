@@ -7,7 +7,7 @@ import {
 } from "../../components/raasApiMethods";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
 import { writeContract, readContract } from "@wagmi/core";
-import { parseEther, toBytes, stringToBytes, toHex } from "viem";
+import { parseEther, toBytes, stringToBytes, toHex, formatEther } from "viem";
 import {
   RAAS_HANDLER_ABI,
   RAAS_HANDLER_ADDRESS,
@@ -82,8 +82,8 @@ const Cid = () => {
     console.log(data);
     setRaasDeals({
       jobstatus: data.jobStatus,
-      amountdeposited: formatBigInt(data.totalAmountDeposited),
-      amountspent: formatBigInt(data.totalAmountSpent),
+      amountdeposited: formatEther(formatBigInt(data.totalAmountDeposited)),
+      amountspent: formatEther(formatBigInt(data.totalAmountSpent)),
       renew: formatBigInt(data.totalRenewJobsDone),
       repair: formatBigInt(data.totalRepairJobsDone),
       replication: formatBigInt(data.totalReplicationJobsDone),
@@ -146,6 +146,19 @@ const Cid = () => {
     }
   };
 
+  // const register = async (_cid, _endDate, _Copies, _aggregator, _epoch) => {
+  //   const requestReceivedTime = new Date();
+  //   // Default end date is 1 month from the request received time
+  //   const defaultEndDate = requestReceivedTime.setMonth(
+  //     requestReceivedTime.getMonth() + 1
+  //   );
+  //   console.log(defaultEndDate);
+  //   console.log(requestReceivedTime);
+  //   console.log(Date.now());
+
+  //   console.log(raasjob);
+  // };
+
   return (
     <div>
       <div className="w-screen">
@@ -180,7 +193,12 @@ const Cid = () => {
                     </Tr>
                     <Tr>
                       <Td>Miner ID</Td>
-                      <Td>{podsiDealInfo ? podsiDealInfo.dealInfo[0].storageProvider : `not found`}</Td>
+                      <Td>
+                        {podsiDealInfo &&
+                          (podsiDealInfo.dealInfo.length
+                            ? podsiDealInfo.dealInfo[0].storageProvider
+                            : `not found`)}
+                      </Td>
                     </Tr>
                     <Tr>
                       <Td>Geo Location of Miner</Td>
@@ -312,10 +330,10 @@ const Cid = () => {
                         }}
                         className="mt-4 text-xl w-full bg-gray-100 px-3 py-2 rounded-xl cursor-pointer"
                       >
-                        <option value={"Replication"}>Replication</option>
-                        <option value={"Renew"}>Renew</option>
-                        <option value={"Repair"}>Repair</option>
-                        <option value={"All"}>All</option>
+                        <option value={"replication"}>Replication</option>
+                        <option value={"renew"}>Renew</option>
+                        <option value={"repair"}>Repair</option>
+                        <option value={"all"}>All</option>
                       </select>
                       <div className="mt-5">
                         <p className="text-xl">Number of Copies</p>
