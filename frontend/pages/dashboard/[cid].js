@@ -65,6 +65,12 @@ const Cid = () => {
     getRaasDeals(cid);
   }, [cid]);
 
+  function formatBigInt(bigInt) {
+    const numberString = bigInt.toString();
+    const formattedNumber = numberString.replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    return formattedNumber;
+  }
+
   const getRaasDeals = async (cid) => {
     if (!cid) return;
     const data = await publicClient.readContract({
@@ -76,11 +82,11 @@ const Cid = () => {
     console.log(data);
     setRaasDeals({
       jobstatus: data.jobStatus,
-      amountdeposited: data.totalAmountDeposited,
-      amountspent: data.totalAmountSpent,
-      renew: data.totalRenewJobsDone,
-      repair: data.totalRepairJobsDone,
-      replication: data.totalReplicationJobsDone,
+      amountdeposited: formatBigInt(data.totalAmountDeposited),
+      amountspent: formatBigInt(data.totalAmountSpent),
+      renew: formatBigInt(data.totalRenewJobsDone),
+      repair: formatBigInt(data.totalRepairJobsDone),
+      replication: formatBigInt(data.totalReplicationJobsDone),
     });
   };
 
@@ -171,6 +177,10 @@ const Cid = () => {
                     <Tr>
                       <Td>Total Amount Spent</Td>
                       <Td>{raasDeals.amountspent && raasDeals.amountspent}</Td>
+                    </Tr>
+                    <Tr>
+                      <Td>Miner ID</Td>
+                      <Td>{podsiDealInfo ? podsiDealInfo.dealInfo[0].storageProvider : `not found`}</Td>
                     </Tr>
                     <Tr>
                       <Td>Geo Location of Miner</Td>
