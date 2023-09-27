@@ -170,7 +170,7 @@ const Cid = () => {
         hash: tx,
       });
       console.log(transaction);
-      notify2(transaction)
+      // notify2(transaction)
     } catch (error) {
       console.log(error);
     }
@@ -215,7 +215,16 @@ const Cid = () => {
                   <Tbody>
                     <Tr>
                       <Td>CID</Td>
-                      <Td><a href={`https://gateway.lighthouse.storage/ipfs/${cid}`} target="_blank" className="px-2 py-0.5 bg-slate-200 rounded-lg cursor-pointer">view</a> {cid}</Td>
+                      <Td>
+                        <a
+                          href={`https://gateway.lighthouse.storage/ipfs/${cid}`}
+                          target="_blank"
+                          className="px-2 py-0.5 bg-slate-200 rounded-lg cursor-pointer"
+                        >
+                          view
+                        </a>{" "}
+                        {cid}
+                      </Td>
                     </Tr>
                     <Tr>
                       <Td>Total Repair Jobs</Td>
@@ -341,7 +350,9 @@ const Cid = () => {
                   </div>
                   <div className="mt-5 w-full flex">
                     <button
-                      onClick={() => {depositFunds(cid, amount)}}
+                      onClick={() => {
+                        depositFunds(cid, amount);
+                      }}
                       className="text-blue-500 border border-blue-500 px-10 py-2 rounded-xl mx-auto text-center items-center"
                     >
                       Deposit
@@ -447,7 +458,7 @@ const Cid = () => {
                               raasjob.aggregator,
                               raasjob.epochs
                             );
-                            notify1()
+                            // notify1();
                           }}
                           className="text-blue-500 border border-blue-500 px-10 py-2 rounded-xl mx-auto text-center items-center"
                         >
