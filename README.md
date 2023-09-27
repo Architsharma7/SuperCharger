@@ -28,6 +28,11 @@ We built SuperCharger keeping in mind these problems and here is what we came up
 2. LightHouse: We use Lighthouse SDK for uploading, encrypting, and applying Access Controls.
 3. Saturn: We use the Saturn CDN service for the retrieval of user data.
 
+4. Flow of the Contract
+   
+   <img width="793" alt="Screenshot 2023-09-27 at 11 30 31 PM" src="https://github.com/Architsharma7/SuperCharger/assets/90101251/e001c6da-93d5-4d41-9ec4-119615b070f0">
+
+
 ## Some Links for Demo
 
 RAAS Job Handler Contract: https://calibration.filfox.info/en/address/0x812d210891726613C0b29e645D56C2ad80c635FF
