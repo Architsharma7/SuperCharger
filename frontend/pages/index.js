@@ -7,10 +7,10 @@ export default function Home() {
     <>
       <div>
         {/* <RepDao /> */}
-        <img
+        {/* <img
           src="https://gateway.ipfs.io/ipfs/QmT7nszGNE9gxZDRfL4Mf7cRHSA61fv4aeayf8JfXXF4BD"
           alt="Image Overlay"
-        />
+        /> */}
       </div>
     </>
   );
