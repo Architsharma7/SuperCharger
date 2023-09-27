@@ -10,6 +10,7 @@ import Navbar from "../components/navbar";
 import localFont from "@next/font/local";
 
 const myFont = localFont({ src: "./CalSans-SemiBold.woff2" });
+
 const CalibrationChain = {
   id: 314159,
   name: "Filecoin - Calibration testnet",
@@ -20,6 +21,9 @@ const CalibrationChain = {
     symbol: "tFIL",
   },
   rpcUrls: {
+    public: {
+      http: ["https://calibration.filfox.info/rpc/v1"],
+    },
     default: {
       http: ["https://calibration.filfox.info/rpc/v1"],
     },
