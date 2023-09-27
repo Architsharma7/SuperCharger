@@ -32,6 +32,19 @@ const registerRaasJob = async (
   }
 };
 
+const getPODSIdetails = async (lighthouse_cid) => {
+  let response = await axios.get(
+    "https://api.lighthouse.storage/api/lighthouse/get_proof",
+    {
+      params: {
+        cid: lighthouse_cid,
+        network: "testnet", 
+      },
+    }
+  );
+  return response.data
+};
+
 const depositFunds = async (cid, value) => {
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
@@ -87,4 +100,4 @@ const getDealStatus = async (_cid) => {
   }
 };
 
-export { getDealStatus, registerRaasJob, getRaasDealInfo, depositFunds };
+export { getDealStatus, registerRaasJob, getRaasDealInfo, depositFunds, getPODSIdetails };
