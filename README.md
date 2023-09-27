@@ -4,6 +4,9 @@
 
 SuperCharger is an SP Explorer to supercharge the data onboarding based on reputation & green score and incentivise RAAS workers to create an immutable, Permanent & unbreakable storage.
 
+[Demo Video](https://youtu.be/_cahlJdfd-0)
+[Presentation](https://pitch.com/public/e76d811b-535a-4a75-8349-54431c77904d)
+
 ## What was the motivation behind it?
 
 1. Proposing deals to Specific SPs on the basis of their Reputation and Green Score is not yet implemented but it can benefit both SPs & User to create a better Storage Ecosystem
@@ -58,3 +61,5 @@ RAAS Job Performance histoy : https://calibration.filfox.info/en/address/0x812d2
 File Uploaded : https://gateway.lighthouse.storage/ipfs/QmWXLTq5muTs42ZK6qHExZekGK18yiUwtW8h2LgPjJvY3h
 
 Demo CIDs : QmWXLTq5muTs42ZK6qHExZekGK18yiUwtW8h2LgPjJvY3h
+
+
