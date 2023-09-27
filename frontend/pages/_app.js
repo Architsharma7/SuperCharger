@@ -22,7 +22,7 @@ const CalibrationChain = {
   },
   rpcUrls: {
     public: {
-      http: ["https://calibration.filfox.info/rpc/v1"],
+      http: ["https://api.calibration.node.glif.io/rpc/v1"],
     },
     default: {
       http: ["https://calibration.filfox.info/rpc/v1"],

@@ -26,25 +26,28 @@ import {
   AccordionPanel,
   AccordionIcon,
 } from "@chakra-ui/react";
+import { DB } from "@dataprograms/repdao-polybase";
 
 const Cid = () => {
   const router = useRouter();
   const { cid } = router.query;
   const [podsiDealInfo, setPodsiDealInfo] = useState();
-
+  const [minerLocations, setMinerLocation] = useState(null);
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
 
   useEffect(() => {
     getpodsiData();
+    getRaasDeals(cid);
   }, [cid]);
 
   const getRaasDeals = async (cid) => {
+    if (!cid) return;
     const data = await publicClient.readContract({
       address: `0xC37175181265D75ed04f28f3c027cC5fAceF5dAd`,
       abi: RAAS_HANDLER_ABI,
       functionName: "getRaasData",
-      args: [toHex(cid)],
+      args: [`${toHex(cid)}`],
     });
     console.log(data);
   };
@@ -55,26 +58,31 @@ const Cid = () => {
     console.log(data);
     setPodsiDealInfo(data);
     console.log(data);
+    // getMinerLocation(data);
   };
 
-  //   const getMinerLocation = async () => {
-  //     try {
-  //       if (miner) {
-  //         const doc = await DB.collection("ground_control_sp_location")
-  //           .where("provider", "==", `${miner}`)
-  //           .limit(1)
-  //           .get();
-  //         let finalData = [];
-  //         await doc.data.forEach((e) => {
-  //           finalData.push(e.data);
-  //         });
-  //         console.log(finalData);
-  //         setMinerLocation(finalData);
-  //       }
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
+  const getMinerLocation = async (podsiDealInfo) => {
+    try {
+      if (podsiDealInfo.dealInfo) {
+        const doc = await DB.collection("ground_control_sp_location")
+          .where(
+            "provider",
+            "==",
+            `${podsiDealInfo.dealInfo[0].storageProvider}`
+          )
+          .limit(1)
+          .get();
+        let finalData = [];
+        await doc.data.forEach((e) => {
+          finalData.push(e.data);
+        });
+        console.log(finalData);
+        setMinerLocation(finalData);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
