@@ -377,7 +377,7 @@ const SpecificMiners = () => {
                     <div className="flex flex-col">
                       <div
                         {...getRootProps({ className: "dropzone" })}
-                        className="border border-dotted border-black py-28 cursor-pointer rounded-2xl"
+                        className="border w-2/3 mx-auto border-dotted border-black py-28 cursor-pointer rounded-2xl"
                       >
                         <input {...getInputProps()} />
                         {acceptedFiles ? (
@@ -389,7 +389,7 @@ const SpecificMiners = () => {
                             ))}
                           </p>
                         ) : (
-                          <p className="text-center text-slate-400 text-xl">
+                          <p className="text-center text-slate-800 text-xl">
                             Drag 'n' drop some files here, or click to select
                             files
                           </p>
