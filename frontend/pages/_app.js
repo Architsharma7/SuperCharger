@@ -10,9 +10,31 @@ import Navbar from "../components/navbar";
 import localFont from "@next/font/local";
 
 const myFont = localFont({ src: "./CalSans-SemiBold.woff2" });
+const CalibrationChain = {
+  id: 314159,
+  name: "Filecoin - Calibration testnet",
+  network: "Filecoin - Calibration testnet",
+  nativeCurrency: {
+    decimals: 18,
+    name: "Test Filecoin",
+    symbol: "tFIL",
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://calibration.filfox.info/rpc/v1"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "Filfox Explorer",
+      url: "https://calibration.filfox.info",
+    },
+  },
+  testnet: true,
+};
 
 const { chains, publicClient } = configureChains(
-  [mainnet, polygon, polygonMumbai],
+  [CalibrationChain],
   [alchemyProvider({ apiKey: process.env.ALCHEMY_ID }), publicProvider()]
 );
 
