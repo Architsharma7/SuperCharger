@@ -1,0 +1,75 @@
+[
+    {
+        "cid": "QmWXLTq5muTs42ZK6qHExZekGK18yiUwtW8h2LgPjJvY3h",
+        "endDate": 1698348838379,
+        "jobType": "all",
+        "replicationTarget": 2,
+        "aggregator": "lighthouse",
+        "epochs": 4,
+        "txID": { "type": "BigNumber", "hex": "0x11" },
+        "dealInfos": {
+            "txID": { "type": "BigNumber", "hex": "0x11" },
+            "dealID": [137441, 137444, 137439, 137711],
+            "inclusion_proof": {
+                "proofIndex": {
+                    "index": "3ff80",
+                    "path": [
+                        "be9cabf0055043747ef398b31f66131c52d20e37ddf6db9eef8a769bec0b8302",
+                        "3731bb99ac689f66eef5973e4a94da188f4ddcae580724fc6f3fd60dfd488333",
+                        "642a607ef886b004bf2c1978463ae1d4693ac0f410eb2d1b7a47fe205e5e750f",
+                        "57a2381a28652bf47f6bef7aca679be4aede5871ab5cf3eb2c08114488cb8526",
+                        "1f7ac9595510e09ea41c460b176430bb322cd6fb412ec57cb17d989a4310372f",
+                        "fc7e928296e516faade986b28f92d44a4f24b935485223376a799027bc18f833",
+                        "08c47b38ee13bc43f41b915c0eed9911a26086b3ed62401bf9d58b8d19dff624",
+                        "b2e47bfb11facd941f62af5c750f3ea5cc4df517d5c4f16db2b4d77baec1a32f",
+                        "f9226160c8f927bfdcc418cdf203493146008eaefb7d02194d5e548189005108",
+                        "2c1a964bb90b59ebfe0f6da29ad65ae3e417724a8f7c11745a40cac1e5e74011",
+                        "fee378cef16404b199ede0b13e11b624ff9d784fbbed878d83297e795e024f02",
+                        "8e9e2403fa884cf6237f60df25f83ee40dca9ed879eb6f6352d15084f5ad0d3f",
+                        "752d9693fa167524395476e317a98580f00947afb7a30540d625a9291cc12a07",
+                        "7022f60f7ef6adfa17117a52619e30cea82c68075adf1c667786ec506eef2d19",
+                        "d99887b973573a96e11393645236c17b1f4c7034d723c7a99f709bb4da61162b",
+                        "d0b530dbb0b4f25c5d2f2a28dfee808b53412a02931f18c499f5a254086b1326",
+                        "84c0421ba0685a01bf795a2344064fe424bd52a9d24377b394ff4c4b4568e811",
+                        "823190b3a9b4f757f1b26c1ed5d26b077f9c230080e36158137c6a507bbba706"
+                    ]
+                },
+                "proofSubtree": {
+                    "index": "0",
+                    "path": [
+                        "fee378cef16404b199ede0b13e11b624ff9d784fbbed878d83297e795e024f02",
+                        "8e9e2403fa884cf6237f60df25f83ee40dca9ed879eb6f6352d15084f5ad0d3f",
+                        "752d9693fa167524395476e317a98580f00947afb7a30540d625a9291cc12a07",
+                        "7022f60f7ef6adfa17117a52619e30cea82c68075adf1c667786ec506eef2d19",
+                        "d99887b973573a96e11393645236c17b1f4c7034d723c7a99f709bb4da61162b",
+                        "d0b530dbb0b4f25c5d2f2a28dfee808b53412a02931f18c499f5a254086b1326",
+                        "2139a54c2941da5e84e4f76da2386bb7e881d7ee4bab64e1469e2a742ff93c1b",
+                        "db5d22057ae16f712d01a87c7e71ed3f76977fee36bed7e0e793745b18e87c04"
+                    ]
+                }
+            },
+            "verifier_data": {
+                "commPc": "0x0181e203922020803953ab81e047babbaa2b437b6ff15e23d2ae63f7004970fe0549e45920ab1f",
+                "sizePc": 65536
+            },
+            "miner": ["17840", "17840", "17840", "17840"]
+        }
+    },
+    {
+        "cid": "QmZALav6b4Nrv1qtvYwsuuzmqr7z1YR7PcfQrVBpyeeRA5",
+        "endDate": 1698381740544,
+        "jobType": "all",
+        "replicationTarget": 2,
+        "aggregator": "lighthouse",
+        "epochs": 4
+    },
+    {
+        "cid": "QmVqymS7pGjHifKqrJWUnAQNEEjVJNWpQ9MB9TYyJ4264T",
+        "endDate": 1698383424103,
+        "jobType": "all",
+        "replicationTarget": 2,
+        "aggregator": "lighthouse",
+        "epochs": 4,
+        "txID": { "type": "BigNumber", "hex": "0x0d" }
+    }
+]

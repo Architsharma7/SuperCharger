@@ -44,9 +44,9 @@ contract RassJobHandler is IAggregatorOracle, Proof {
     mapping(bytes => RassJobData) private rassJobDatas;
     address public owner;
 
-    uint public constant RENEW_JOB_AMOUNT = 0.5 * 1 ether;
-    uint public constant REPAIR_JOB_AMOUNT = 0.2 * 1 ether;
-    uint public constant REPLICATION_JOB_AMOUNT = 0.1 * 1 ether;
+    uint public constant RENEW_JOB_AMOUNT = 0.05 * 1 ether;
+    uint public constant REPAIR_JOB_AMOUNT = 0.02 * 1 ether;
+    uint public constant REPLICATION_JOB_AMOUNT = 0.01 * 1 ether;
 
     constructor() {
         owner = msg.sender;
