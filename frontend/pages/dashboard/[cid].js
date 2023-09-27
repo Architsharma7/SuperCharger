@@ -82,8 +82,8 @@ const Cid = () => {
     console.log(data);
     setRaasDeals({
       jobstatus: data.jobStatus,
-      amountdeposited: formatEther(formatBigInt(data.totalAmountDeposited)),
-      amountspent: formatEther(formatBigInt(data.totalAmountSpent)),
+      amountdeposited: formatEther(data.totalAmountDeposited),
+      amountspent: formatEther(data.totalAmountSpent),
       renew: formatBigInt(data.totalRenewJobsDone),
       repair: formatBigInt(data.totalRepairJobsDone),
       replication: formatBigInt(data.totalReplicationJobsDone),
