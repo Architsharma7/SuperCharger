@@ -16,7 +16,7 @@ const Navbar = () => {
           onClick={() => router.push("/")}
           className="text-transparent bg-clip-text bg-blue-400 text-4xl cursor-pointer"
         >
-          GOSDA
+          SuperCharger
         </p>
         {isConnected ? (
           <div className="flex justify-evenly mt-2 mx-3">

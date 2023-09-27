@@ -297,7 +297,7 @@ const Dashboard = () => {
           </TableContainer>
           <Box position="relative" padding="10">
             <Divider />
-            <AbsoluteCenter bg="white" px="4">
+            <AbsoluteCenter bg="" px="4">
               <p className="text-slate-500">Some Functions</p>
             </AbsoluteCenter>
           </Box>
