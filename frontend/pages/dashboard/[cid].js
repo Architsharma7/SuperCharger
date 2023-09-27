@@ -148,7 +148,7 @@ const Cid = () => {
                     <TableContainer className="">
                       <Table variant="simple">
                         <Tbody>
-                          {/* <Tr>
+                          <Tr>
                             <Td>Car File Size</Td>
                             <Td>
                               {podsiDealInfo && podsiDealInfo.carFileSize}
@@ -183,7 +183,7 @@ const Cid = () => {
                           <Tr>
                             <Td>Verifier ID</Td>
                             <Td>{podsiDealInfo && podsiDealInfo.proof.fileProof.verifierData.commPc}</Td>
-                          </Tr> */}
+                          </Tr>
                         </Tbody>
                       </Table>
                     </TableContainer>
