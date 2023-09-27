@@ -30,11 +30,12 @@ import {
   AccordionIcon,
 } from "@chakra-ui/react";
 import { Card, CardHeader, CardBody, CardFooter } from "@chakra-ui/react";
+import { DB } from "@dataprograms/repdao-polybase";
 
 const Cid = () => {
   const router = useRouter();
   const { cid } = router.query;
-  const [podsiDealInfo, setPodsiDealInfo] = useState([]);
+  const [podsiDealInfo, setPodsiDealInfo] = useState();
   const [minerLocations, setMinerLocation] = useState(null);
   const [raasjob, setRaasJob] = useState({
     type: "",
@@ -43,36 +44,43 @@ const Cid = () => {
     aggregator: "lighthouse",
     epochs: "",
   });
-
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
 
   useEffect(() => {
     getpodsiData();
-  }, []);
+    getRaasDeals(cid);
+  }, [cid]);
 
   const getRaasDeals = async (cid) => {
+    if (!cid) return;
     const data = await publicClient.readContract({
       address: `0xC37175181265D75ed04f28f3c027cC5fAceF5dAd`,
       abi: RAAS_HANDLER_ABI,
       functionName: "getRaasData",
-      args: [toHex(cid)],
+      args: [`${toHex(cid)}`],
     });
     console.log(data);
   };
 
   const getpodsiData = async () => {
+    if (!cid) return;
     const data = await getPODSIdetails(cid);
     console.log(data);
     setPodsiDealInfo(data);
     console.log(data);
+    // getMinerLocation(data);
   };
 
-  const getMinerLocation = async () => {
+  const getMinerLocation = async (podsiDealInfo) => {
     try {
       if (podsiDealInfo.dealInfo) {
         const doc = await DB.collection("ground_control_sp_location")
-          .where("provider", "==", `${podsiDealInfo.dealInfo.storageProvider}`)
+          .where(
+            "provider",
+            "==",
+            `${podsiDealInfo.dealInfo[0].storageProvider}`
+          )
           .limit(1)
           .get();
         let finalData = [];
@@ -142,7 +150,9 @@ const Cid = () => {
                         <Tbody>
                           {/* <Tr>
                             <Td>Car File Size</Td>
-                           <Td>{podsiDealInfo && podsiDealInfo.carFileSize}</Td>
+                            <Td>
+                              {podsiDealInfo && podsiDealInfo.carFileSize}
+                            </Td>
                           </Tr>
                           <Tr>
                             <Td>piece CID</Td>
@@ -154,7 +164,9 @@ const Cid = () => {
                           </Tr>
                           <Tr>
                             <Td>Last Updated</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.lastUpdate}</Td>
+                            <Td>
+                              {podsiDealInfo && podsiDealInfo.proof.lastUpdate}
+                            </Td>
                           </Tr>
                           <Tr>
                             <Td>Piece Size</Td>
@@ -162,7 +174,11 @@ const Cid = () => {
                           </Tr>
                           <Tr>
                             <Td>Proof Index</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.fileProof.inclusionProof.proofIndex.index}</Td>
+                            <Td>
+                              {podsiDealInfo &&
+                                podsiDealInfo.proof.fileProof.inclusionProof
+                                  .proofIndex.index}
+                            </Td>
                           </Tr>
                           <Tr>
                             <Td>Verifier ID</Td>
