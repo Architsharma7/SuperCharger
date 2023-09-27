@@ -30,14 +30,14 @@ import {
 const Cid = () => {
   const router = useRouter();
   const { cid } = router.query;
-  const [podsiDealInfo, setPodsiDealInfo] = useState([]);
+  const [podsiDealInfo, setPodsiDealInfo] = useState();
 
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
 
   useEffect(() => {
     getpodsiData();
-  }, []);
+  }, [cid]);
 
   const getRaasDeals = async (cid) => {
     const data = await publicClient.readContract({
@@ -50,32 +50,32 @@ const Cid = () => {
   };
 
   const getpodsiData = async () => {
+    if (!cid) return;
     const data = await getPODSIdetails(cid);
-    console.log(data)
+    console.log(data);
     setPodsiDealInfo(data);
     console.log(data);
   };
 
-//   const getMinerLocation = async () => {
-//     try {
-//       if (miner) {
-//         const doc = await DB.collection("ground_control_sp_location")
-//           .where("provider", "==", `${miner}`)
-//           .limit(1)
-//           .get();
-//         let finalData = [];
-//         await doc.data.forEach((e) => {
-//           finalData.push(e.data);
-//         });
-//         console.log(finalData);
-//         setMinerLocation(finalData);
-//       }
-//     } catch (error) {
-//       console.log(error);
-//     }
-//   };
+  //   const getMinerLocation = async () => {
+  //     try {
+  //       if (miner) {
+  //         const doc = await DB.collection("ground_control_sp_location")
+  //           .where("provider", "==", `${miner}`)
+  //           .limit(1)
+  //           .get();
+  //         let finalData = [];
+  //         await doc.data.forEach((e) => {
+  //           finalData.push(e.data);
+  //         });
+  //         console.log(finalData);
+  //         setMinerLocation(finalData);
+  //       }
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
 
-  
   return (
     <div>
       <div className="w-screen">
@@ -128,7 +128,9 @@ const Cid = () => {
                         <Tbody>
                           <Tr>
                             <Td>Car File Size</Td>
-                           <Td>{podsiDealInfo && podsiDealInfo.carFileSize}</Td>
+                            <Td>
+                              {podsiDealInfo && podsiDealInfo.carFileSize}
+                            </Td>
                           </Tr>
                           <Tr>
                             <Td>piece CID</Td>
@@ -140,7 +142,9 @@ const Cid = () => {
                           </Tr>
                           <Tr>
                             <Td>Last Updated</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.lastUpdate}</Td>
+                            <Td>
+                              {podsiDealInfo && podsiDealInfo.proof.lastUpdate}
+                            </Td>
                           </Tr>
                           <Tr>
                             <Td>Piece Size</Td>
@@ -148,11 +152,19 @@ const Cid = () => {
                           </Tr>
                           <Tr>
                             <Td>Proof Index</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.fileProof.inclusionProof.proofIndex.index}</Td>
+                            <Td>
+                              {podsiDealInfo &&
+                                podsiDealInfo.proof.fileProof.inclusionProof
+                                  .proofIndex.index}
+                            </Td>
                           </Tr>
                           <Tr>
                             <Td>Verifier ID</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.fileProof.verifierData.commPc}</Td>
+                            <Td>
+                              {podsiDealInfo &&
+                                podsiDealInfo.proof.fileProof.verifierData
+                                  .commPc}
+                            </Td>
                           </Tr>
                         </Tbody>
                       </Table>
