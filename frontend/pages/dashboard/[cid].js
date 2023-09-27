@@ -6,6 +6,7 @@ import {
   registerRaasJob,
 } from "../../components/raasApiMethods";
 import { useAccount, usePublicClient, useWalletClient } from "wagmi";
+import { writeContract, readContract } from "@wagmi/core";
 import { parseEther, toBytes, stringToBytes, toHex } from "viem";
 import {
   RAAS_HANDLER_ABI,
@@ -57,6 +58,7 @@ const Cid = () => {
   const [amount, setAmount] = useState("");
   const { address: account } = useAccount();
   const publicClient = usePublicClient();
+  const { data: walletClient } = useWalletClient();
 
   useEffect(() => {
     getpodsiData();
@@ -66,7 +68,7 @@ const Cid = () => {
   const getRaasDeals = async (cid) => {
     if (!cid) return;
     const data = await publicClient.readContract({
-      address: `0xC37175181265D75ed04f28f3c027cC5fAceF5dAd`,
+      address: RAAS_HANDLER_ADDRESS,
       abi: RAAS_HANDLER_ABI,
       functionName: "getRaasData",
       args: [`${toHex(cid)}`],
@@ -87,7 +89,6 @@ const Cid = () => {
     const data = await getPODSIdetails(cid);
     console.log(data);
     setPodsiDealInfo(data);
-    console.log(data);
     // getMinerLocation(data);
   };
 
@@ -109,6 +110,31 @@ const Cid = () => {
         console.log(finalData);
         setMinerLocation(finalData);
       }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const depositFunds = async (cid, value) => {
+    try {
+      const data = await publicClient.simulateContract({
+        account,
+        address: RAAS_HANDLER_ADDRESS,
+        abi: RAAS_HANDLER_ABI,
+        functionName: "depositFunds",
+        args: [`${toHex(cid)}`],
+        value: parseEther(value),
+      });
+      if (!walletClient) {
+        return;
+      }
+      console.log(account);
+      const tx = await walletClient.writeContract(data.request);
+      console.log("Transaction Sent");
+      const transaction = await publicClient.waitForTransactionReceipt({
+        hash: tx,
+      });
+      console.log(transaction);
     } catch (error) {
       console.log(error);
     }
@@ -166,48 +192,59 @@ const Cid = () => {
                   <AccordionPanel pb={4}>
                     <TableContainer className="">
                       <Table variant="simple">
-                        <Tbody>
-                          <Tr>
-                            <Td>Car File Size</Td>
-                            <Td>
-                              {podsiDealInfo && podsiDealInfo.carFileSize}
-                            </Td>
-                          </Tr>
-                          <Tr>
-                            <Td>piece CID</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.pieceCID}</Td>
-                          </Tr>
-                          <Tr>
-                            <Td>ID</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.proof.id}</Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Last Updated</Td>
-                            <Td>
-                              {podsiDealInfo && podsiDealInfo.proof.lastUpdate}
-                            </Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Piece Size</Td>
-                            <Td>{podsiDealInfo && podsiDealInfo.pieceSize}</Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Proof Index</Td>
-                            <Td>
-                              {podsiDealInfo &&
-                                podsiDealInfo.proof.fileProof.inclusionProof
-                                  .proofIndex.index}
-                            </Td>
-                          </Tr>
-                          <Tr>
-                            <Td>Verifier ID</Td>
-                            <Td>
-                              {podsiDealInfo &&
-                                podsiDealInfo.proof.fileProof.verifierData
-                                  .commPc}
-                            </Td>
-                          </Tr>
-                        </Tbody>
+                        {podsiDealInfo && (
+                          <Tbody>
+                            <Tr>
+                              <Td>Car File Size</Td>
+                              <Td>
+                                {podsiDealInfo.carFileSize &&
+                                  podsiDealInfo.carFileSize}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>piece CID</Td>
+                              <Td>
+                                {podsiDealInfo.pieceCID &&
+                                  podsiDealInfo.pieceCID}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>ID</Td>
+                              <Td>
+                                {podsiDealInfo.proof && podsiDealInfo.proof.id}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Last Updated</Td>
+                              <Td>
+                                {podsiDealInfo.proof &&
+                                  podsiDealInfo.proof.lastUpdate}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Piece Size</Td>
+                              <Td>
+                                {podsiDealInfo.proof && podsiDealInfo.pieceSize}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Proof Index</Td>
+                              <Td>
+                                {podsiDealInfo.proof &&
+                                  podsiDealInfo.proof.fileProof.inclusionProof
+                                    .proofIndex.index}
+                              </Td>
+                            </Tr>
+                            <Tr>
+                              <Td>Verifier ID</Td>
+                              <Td>
+                                {podsiDealInfo.proof &&
+                                  podsiDealInfo.proof.fileProof.verifierData
+                                    .commPc}
+                              </Td>
+                            </Tr>
+                          </Tbody>
+                        )}
                       </Table>
                     </TableContainer>
                   </AccordionPanel>
